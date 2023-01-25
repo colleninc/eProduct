@@ -1,3 +1,4 @@
+using api.eProduct.Data;
 using eProduct.Data;
 using eProduct.Data.Service;
 using eProduct.Model;
@@ -148,6 +149,8 @@ namespace eProduct
                 c.RoutePrefix = "swagger";
             });
             app.UseMvc();
+            //Update admin user database
+            AppAdminUserInitializer.SeedApp_AdminUserAsync(app).Wait();
         }
     }
 }

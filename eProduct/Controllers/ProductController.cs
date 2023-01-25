@@ -21,17 +21,23 @@ namespace eProduct.Controllers
         }
 
         [HttpPost]
+        [Route("AddProduct")]
         public async Task<IActionResult> Create(ProductDto data)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid product details");
             var NewProduct = new Product()
             {
                 ProductCategoryId = data.ProductCategoryID,
-                Description = data.Description
+                Description = data.Description,
+                ProductName = data.ProductName,
+                Price = data.Price,
+                Quantity = data.Quantity,
+                Re_OrderLevel = data.Re_OrderLevel,
+                ImageURL = data.ImageURL
             };
 
             await _service.AddAsync(NewProduct);
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
     }
 }

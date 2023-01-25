@@ -6174,11 +6174,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Dev\\Source\\Repos\\eProduct\\eProduct\\api.eProduct.csproj",
+      "projectUniqueName": "C:\\Users\\CollenMawela-MpiloTe\\source\\repos\\eProduct\\eProduct\\api.eProduct.csproj",
       "projectName": "api.eProduct",
-      "projectPath": "C:\\Dev\\Source\\Repos\\eProduct\\eProduct\\api.eProduct.csproj",
+      "projectPath": "C:\\Users\\CollenMawela-MpiloTe\\source\\repos\\eProduct\\eProduct\\api.eProduct.csproj",
       "packagesPath": "C:\\Users\\CollenMawela-MpiloTe\\.nuget\\packages\\",
-      "outputPath": "C:\\Dev\\Source\\Repos\\eProduct\\eProduct\\obj\\",
+      "outputPath": "C:\\Users\\CollenMawela-MpiloTe\\source\\repos\\eProduct\\eProduct\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -21,6 +21,7 @@ namespace api.eProduct.Controllers
         }
 
         [HttpPost]
+        [Route("CreateCategory")]
         public async Task<IActionResult> Create(Category data)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid category details");
@@ -31,7 +32,22 @@ namespace api.eProduct.Controllers
             };
 
             await _service.AddAsync(NewCategory);
-            return RedirectToAction(nameof(Index));
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("GetProductCategories")]
+        public async Task<List<ProductCategory>> GetCategory()
+        {
+            return await _service.GetAllAsync();
+        }
+
+        [HttpDelete]
+        [Route("RemoveCategory")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using api.eProduct.Data.Dto;
+﻿using api.eProduct.Data.Base;
+using api.eProduct.Data.Dto;
 using eProduct.Data;
 using eProduct.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +31,8 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("AuthenticateUser")]
-        public async Task<AuthUser> AuthenticateUser(LoginDto login)
+        [Authorize]
+        public async Task<AuthUser> AuthenticateUser([FromBody] LoginDto login)
         {
             try
             {
@@ -40,22 +43,22 @@ namespace api.eProduct.Controllers
                 }
 
                 var user = await _userManager.FindByEmailAsync(login.EmailAddress);
-                if (user != null)
-                {
+                if (user != null) return null;
+                
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, false, false);
                     if (result.Succeeded)
                     {
-                        ApplicationUser appUser = _userManager.Users.SingleOrDefault(r => r.UserName == user.UserName);
-                        IList<string> userRoles = await _userManager.GetRolesAsync(user: appUser).ConfigureAwait(true);
+                        //ApplicationUser appUser = _userManager.Users.SingleOrDefault(r => r.UserName == user.UserName);
+                        IList<string> userRoles = await _userManager.GetRolesAsync(user).ConfigureAwait(true);
                         
                         AuthUser log_User = new AuthUser
                         {
-                            UserId = Guid.Parse(appUser.Id),
-                            DisplayName = appUser.FullName,
-                            Email = appUser.Email,
+                            UserId = Guid.Parse(user.Id),
+                            DisplayName = user.FullName,
+                            Email = user.Email,
                             
                             //RoleId = role.Id,
-                            UserRole = userRoles.ToString(),
+                            UserRole = userRoles.Count >0 ? userRoles[0].ToString() : "",
 
                         };
                         return log_User;
@@ -63,17 +66,41 @@ namespace api.eProduct.Controllers
                     }
                     else
                         return new AuthUser() { UserId = Guid.Empty };
-                }                
-                else
-                {
-                    return new AuthUser() { UserId = Guid.Empty };
-                    //return Ok("SUCCESS");
-                }
+                               
+                
             }
             catch (Exception ex)
             {
                 throw new ApplicationException("INVALID_LOGIN_ATTEMPT: " + ex.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("Register")]
+        [Authorize]
+        public async Task<IActionResult> Register([FromBody] RegisterVM registerVM)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var user = await _userManager.FindByEmailAsync(registerVM.EmailAddress);
+            if (user != null)
+            {
+                return BadRequest("This email address is already in use. Please use a different Email.");
+                
+            }
+
+            var newUser = new ApplicationUser()
+            {
+                FullName = registerVM.FullName,
+                Email = registerVM.EmailAddress,
+                UserName = registerVM.EmailAddress
+            };
+            var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
+
+            if (newUserResponse.Succeeded)
+                await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+
+            return Ok("RegisterCompleted");
         }
     }
 }

@@ -39,11 +39,13 @@ namespace api.eProduct.Controllers
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(model.EmailAddress, model.Password, false, false);
+                var user = await _userManager.FindByEmailAsync(model.EmailAddress);
+                if (user == null) return null;
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, false, false);
                 TokenResponse tokenResponse;
                 if (result.Succeeded)
                 {
-                    var appUser = _userManager.Users.SingleOrDefault(r => r.UserName == model.EmailAddress);
+                    var appUser = _userManager.Users.SingleOrDefault(r => r.UserName == user.UserName);
                     var jwtToken = await GenerateJwtToken(model.EmailAddress, appUser);
                     
                     return tokenResponse = new TokenResponse
