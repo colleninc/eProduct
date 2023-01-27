@@ -12,6 +12,7 @@ namespace eProduct.Model
         [Key]
         public Guid Id { get; set; }       
         public DateTimeOffset OrderDate { get; set; }
+        public string Email { get; set; }
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public ApplicationUser User { get; set; }

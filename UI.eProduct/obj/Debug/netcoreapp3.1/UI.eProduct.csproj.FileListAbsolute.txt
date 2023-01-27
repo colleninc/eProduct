@@ -43,3 +43,6 @@ C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcor
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\UI.eProduct.genruntimeconfig.cache
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\Razor\Views\Categories\Create.cshtml.g.cs
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_CreateItem.cshtml.g.cs
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\Razor\Views\Products\Index.cshtml.g.cs
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Identity.cshtml.g.cs
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.1\Razor\Views\Products\Details.cshtml.g.cs

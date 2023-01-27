@@ -34,7 +34,7 @@ namespace UI.eProduct.ApiUtils
                 using (HttpClient client = new HttpClient())
                 {
                     var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-                    Uri u = new Uri(@"" + _BaseURL + "/api/auth/GetToken");
+                    Uri u = new Uri(@"" + _BaseURL + "api/Auth/GetToken");
                     var payload = new LoginVM
                     {
                         EmailAddress = _apiUserName,

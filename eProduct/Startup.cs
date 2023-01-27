@@ -1,4 +1,5 @@
 using api.eProduct.Data;
+using api.eProduct.Model;
 using eProduct.Data;
 using eProduct.Data.Service;
 using eProduct.Model;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -85,8 +87,10 @@ namespace eProduct
 
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<IProductCategories, ProductsCategoriesService>();
+            services.AddScoped<IOrdersService, OrdersService>();
 
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
             //Authentication and authorization
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
             services.AddMemoryCache();
@@ -149,6 +153,9 @@ namespace eProduct
                 c.RoutePrefix = "swagger";
             });
             app.UseMvc();
+            //Initial sample products
+            AppAdminUserInitializer.InitializeProductCategories(app);
+
             //Update admin user database
             AppAdminUserInitializer.SeedApp_AdminUserAsync(app).Wait();
         }

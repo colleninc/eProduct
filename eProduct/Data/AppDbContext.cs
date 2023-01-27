@@ -1,6 +1,7 @@
 ﻿
 
 
+using api.eProduct.Model;
 using eProduct.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ namespace eProduct.Data
         #region dbsets
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> Categories { get; set; }
         #endregion

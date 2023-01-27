@@ -2,6 +2,7 @@
 
 using eProduct.Data.Base;
 using eProduct.Model;
+using System;
 using System.Threading.Tasks;
 
 namespace eProduct.Data.Service
@@ -15,10 +16,11 @@ namespace eProduct.Data.Service
         }
 
         public async Task AddNewProduct(Product data)
-        {
-            
+        {            
             _context.Products.AddAsync(data);
             _context.SaveChangesAsync();
         }
+
+        
     }
 }

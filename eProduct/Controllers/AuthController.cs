@@ -35,7 +35,7 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("GetToken")]
-        public async Task<TokenResponse> GetToken([FromBody] LoginDto model)
+        public async Task<object> GetToken([FromBody] LoginDto model)
         {
             try
             {
@@ -46,16 +46,12 @@ namespace api.eProduct.Controllers
                 if (result.Succeeded)
                 {
                     var appUser = _userManager.Users.SingleOrDefault(r => r.UserName == user.UserName);
-                    var jwtToken = await GenerateJwtToken(model.EmailAddress, appUser);
+                    return await GenerateJwtToken(model.EmailAddress, appUser);                   
                     
-                    return tokenResponse = new TokenResponse
-                    {
-                        Token = jwtToken == null ? string.Empty : jwtToken.ToString()
-                    };
                 }
                 else
                 {
-                   return null;
+                    return BadRequest(result.IsNotAllowed);
                 }
             }
             catch (Exception ex)

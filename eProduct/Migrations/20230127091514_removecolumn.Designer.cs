@@ -10,8 +10,8 @@ using eProduct.Data;
 namespace api.eProduct.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230125075938_initial")]
-    partial class initial
+    [Migration("20230127091514_removecolumn")]
+    partial class removecolumn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -152,6 +152,28 @@ namespace api.eProduct.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("api.eProduct.Model.ShoppingCartItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShoppingCartId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("eProduct.Model.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -225,6 +247,9 @@ namespace api.eProduct.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("OrderDate")
                         .HasColumnType("datetimeoffset");
@@ -360,6 +385,15 @@ namespace api.eProduct.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api.eProduct.Model.ShoppingCartItem", b =>
+                {
+                    b.HasOne("eProduct.Model.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("eProduct.Model.Order", b =>

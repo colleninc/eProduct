@@ -43,9 +43,9 @@ namespace api.eProduct.Controllers
                 }
 
                 var user = await _userManager.FindByEmailAsync(login.EmailAddress);
-                if (user != null) return null;
-                
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, false, false);
+                if (user == null) return new AuthUser() { UserId = Guid.Empty };
+
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, false, false);
                     if (result.Succeeded)
                     {
                         //ApplicationUser appUser = _userManager.Users.SingleOrDefault(r => r.UserName == user.UserName);
@@ -62,7 +62,7 @@ namespace api.eProduct.Controllers
 
                         };
                         return log_User;
-                        //return Ok("SUCCESS");
+                        //return Ok(log_User);
                     }
                     else
                         return new AuthUser() { UserId = Guid.Empty };

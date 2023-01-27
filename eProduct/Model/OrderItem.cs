@@ -17,8 +17,7 @@ namespace eProduct.Model
 
         public Guid ProductID { get; set; }
         [ForeignKey("ProductID")]
-        public Product Product { get; set; }
-
+        public Product Product { get; set; }        
         public Guid OrderId { get; set; }
         [ForeignKey("OrderId")]
         public Order Order { get; set; }
