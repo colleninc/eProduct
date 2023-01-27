@@ -210,7 +210,7 @@ namespace UI.eProduct.APIHelpers
             using (HttpClient client = new HttpClient())
             {
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-                Uri u = new Uri(@"" + _BaseURL + $"/api/Orders/AddItemToShoppingCart/cartid={CartId}");
+                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/AddItemToShoppingCart?id={item.Id}&CartId={CartId}");
                
                 HttpContent c = new StringContent(JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = client.PostAsync(u, c).Result;
@@ -241,19 +241,19 @@ namespace UI.eProduct.APIHelpers
             }
         }
 
-        public async Task<List<ShoppingBasketVM>> GetShoppingCartItems(string cartid)
+        public async Task<List<ShoppingBasketItems>> GetShoppingCartItems(string cartid)
         {
             
-            List<ShoppingBasketVM> Categories = new List<ShoppingBasketVM>();
+            List<ShoppingBasketItems> Categories = new List<ShoppingBasketItems>();
             using (var client = new HttpClient())
             {
                 //Passing service base url
-                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/GetShoppingCartItems/Cartid={cartid}");
+                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/CompleteOrder?CartId={cartid}");
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var token = new Token().GetToken();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                //var token = new Token().GetToken();
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage Res = await client.GetAsync(u);
                 
                 if (Res.IsSuccessStatusCode)
@@ -261,7 +261,7 @@ namespace UI.eProduct.APIHelpers
                     //Storing the response details recieved from web api
                     var EmpResponse = Res.Content.ReadAsStringAsync().Result;
                     //Deserializing the response recieved from web api and storing into the Employee list
-                    Categories = JsonConvert.DeserializeObject<List<ShoppingBasketVM>>(EmpResponse);
+                    Categories = JsonConvert.DeserializeObject<List<ShoppingBasketItems>>(EmpResponse);
                 }
 
             }

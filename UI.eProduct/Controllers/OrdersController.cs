@@ -26,24 +26,36 @@ namespace UI.eProduct.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ShoppingBasket()        {
+            
+            var response = await _aPIHelpers.GetShoppingCartItems(_shoppingCart.GetShoppingCartId());
+
+            return View(response);
+        }
+
         public async Task<IActionResult> AddItemToShoppingCart(Guid id)
         {
+            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
+                return RedirectToAction("Login", "Account");
+
             var item = await _aPIHelpers.GetByIdAsync(id);
             if (item.Id != Guid.Empty)
             {
                await _aPIHelpers.AddItemToBasket(item, _shoppingCart.GetShoppingCartId());
             }
-            return RedirectToAction(nameof(ShoppingBasket));
+            return RedirectToAction("ShoppingBasket", "Orders");
         }
 
-        public async Task<IActionResult> AddItemToBasket(Guid id)
+        public async Task<IActionResult> RemoveItemFromBasket(Guid id)
         {
+            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
+                return RedirectToAction("Login", "Account");
             var item = await _aPIHelpers.GetByIdAsync(id);
             if (item.Id != Guid.Empty)                
             {
               await  _aPIHelpers.RemoveItemFromBasket(item, _shoppingCart.GetShoppingCartId());
             }
-            return RedirectToAction(nameof(ShoppingBasket));
+            return RedirectToAction("ShoppingBasket", "Orders");
         }
     }
 }

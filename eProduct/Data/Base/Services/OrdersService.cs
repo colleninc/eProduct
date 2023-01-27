@@ -34,6 +34,7 @@ namespace eProduct.Data.Service
         {
             var order = new Order()
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 Email = userEmailAddress,
                 OrderDate = DateTimeOffset.UtcNow
@@ -45,6 +46,7 @@ namespace eProduct.Data.Service
             {
                 var orderItem = new OrderItem()
                 {
+                    Id = Guid.NewGuid(),
                     Qty = item.Quantity,
                     ProductID = item.Product.Id,
                     OrderId = order.Id,

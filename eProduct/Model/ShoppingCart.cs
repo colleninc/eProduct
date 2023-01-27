@@ -35,6 +35,7 @@ namespace api.eProduct.Model
 
         public void AddItemToCart(Product product, string CartId)
         {
+            
             var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == CartId);
 
             if (shoppingCartItem == null)

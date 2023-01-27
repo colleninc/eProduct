@@ -30,63 +30,90 @@ namespace api.eProduct.Controllers
 
         [HttpGet]
         [Route("GetShoppingCartItems")]
-        public async Task<ShoppingCartVM> GetShoppingCartItems(string CartId)
+        public async Task<ShoppingCartVM> ReturnWhatsIntheBasket(string CartId)
         {
-            return await ReturnWhatsIntheBasket(CartId);
-        }
-
-        private async Task<ShoppingCartVM> ReturnWhatsIntheBasket(string CartId)
-        {
-            var items =  _shoppingCart.GetShoppingCartItems(CartId);
-            _shoppingCart.ShoppingCartItems = items;
-
-            var basket = new ShoppingCartVM()
+            try
             {
-                ShoppingCart = _shoppingCart,
-                ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal(CartId)
-            };
+                var items = _shoppingCart.GetShoppingCartItems(CartId);
+                _shoppingCart.ShoppingCartItems = items;
 
-            return basket;
+                var basket = new ShoppingCartVM()
+                {
+                    ShoppingCart = null, //_shoppingCart,
+                    ShoppingCartTotal = 0// _shoppingCart.GetShoppingCartTotal(CartId)
+                };
+
+                return basket;
+            }
+            catch 
+            {
+                return null; 
+            }
         }
+        
 
         [HttpPost]
         [Route("AddItemToShoppingCart")]
-        public async Task<ShoppingCartVM> AddItemToShoppingCart(Guid id, string CartId)
+        public async Task<IActionResult> AddItemToShoppingCart(Guid id, string CartId)
         {
+            try 
+            { 
             var item = await _productsService.GetByIdAsync(id);
 
             if (item != null)
             {
                 _shoppingCart.AddItemToCart(item, CartId);
             }
-            return await ReturnWhatsIntheBasket(CartId);
+            return Ok("Item added");
         }
+            catch(Exception ex)
+            {
+                return BadRequest($"Error adding item - {ex.Message}");
+    }
+}
 
         [HttpDelete]
         [Route("RemoveItemFromShoppingCart")]
-        public async Task<ShoppingCartVM> RemoveItemFromShoppingCart(Guid id, string CartId)
+        public async Task<IActionResult> RemoveItemFromShoppingCart(Guid id, string CartId)
         {
-            var item = await _productsService.GetByIdAsync(id);
-
-            if (item != null)
+            try
             {
-                _shoppingCart.RemoveItemFromCart(item, CartId);
+                var item = await _productsService.GetByIdAsync(id);
+
+                if (item != null)
+                {
+                    _shoppingCart.RemoveItemFromCart(item, CartId);
+                }
+                return Ok("Item removed"); ;
             }
-            return await ReturnWhatsIntheBasket(CartId);
+            catch(Exception ex)
+            {
+                return BadRequest($"Error removing item - {ex.Message}");
+            }
+            
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("CompleteOrder")]
         public async Task<IActionResult> CompleteOrder(string CartId)
         {
-            var items = _shoppingCart.GetShoppingCartItems(CartId);
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
+            try
+            {
+                var items = _shoppingCart.GetShoppingCartItems(CartId);
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
-            await _ordersService.StoreOrderAsync(items, userId, userEmailAddress);
-            await _shoppingCart.ClearShoppingCartAsync(CartId);
+                await _ordersService.StoreOrderAsync(items, userId, userEmailAddress);
+                await _shoppingCart.ClearShoppingCartAsync(CartId);
 
-            return Ok("OrderCompleted");
+                return Ok("OrderCompleted");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error removing item - {ex.Message}");
+            }
+
+            
         }
 
         [HttpGet]
