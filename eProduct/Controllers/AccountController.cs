@@ -31,7 +31,7 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("AuthenticateUser")]
-        [Authorize]
+        //[Authorize]
         public async Task<AuthUser> AuthenticateUser([FromBody] LoginDto login)
         {
             try
@@ -77,7 +77,7 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("Register")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Register([FromBody] RegisterVM registerVM)
         {
             if (!ModelState.IsValid) return BadRequest();
@@ -98,9 +98,21 @@ namespace api.eProduct.Controllers
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
 
             if (newUserResponse.Succeeded)
+            {
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-
-            return Ok("RegisterCompleted");
+                
+                return Ok("RegisterCompleted");
+            }
+            else
+            {
+                if (newUserResponse.Errors.Any())
+                {
+                    return BadRequest(newUserResponse.Errors.ToList()[0].Description);
+                }
+                else
+                    return BadRequest("Error creating user");
+            }
+                
         }
     }
 }

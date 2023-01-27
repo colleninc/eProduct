@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UI.eProduct.APIHelpers;
 using UI.eProduct.Data.VM;
 using Microsoft.AspNetCore.Http;
-
+using System;
 
 namespace UI.eProduct.Controllers
 {
@@ -34,9 +34,9 @@ namespace UI.eProduct.Controllers
                 //HttpContext.Session["AuthUser"] = user;
                 return RedirectToAction("Index", "Products");
             }
-            catch
+            catch (Exception ex)
             {
-                TempData["Error"] = "Invalid login details";
+                TempData["Error"] = ex.Message;
                 return View(loginVM);
             }
             
@@ -48,9 +48,17 @@ namespace UI.eProduct.Controllers
         public async Task<IActionResult> Register(RegisterVM register)
         {
             if (!ModelState.IsValid) return View(register);
-
-            var user = await _aPIHelper.RegisterUser(register);
-            return RedirectToAction("Index", "Products");
+            try
+            {
+                var user = await _aPIHelper.RegisterUser(register);
+                return RedirectToAction("Index", "Products");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return View(register);
+            }
+            
         }
         public async Task<IActionResult> Logout()
         {

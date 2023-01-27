@@ -56,8 +56,8 @@ namespace UI.eProduct.APIHelpers
                 var obj = JsonConvert.SerializeObject(loginVM);
 
                 HttpContent c = new StringContent(obj, Encoding.UTF8, "application/json");
-                var token = new Token().GetToken();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                //var token = new Token().GetToken();
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage Res = client.PostAsync(u, c).Result;
                
                 if (Res.IsSuccessStatusCode)
@@ -77,7 +77,7 @@ namespace UI.eProduct.APIHelpers
             }
         }
 
-        public async Task<AuthUser> RegisterUser(RegisterVM regVM)
+        public async Task<string> RegisterUser(RegisterVM regVM)
         {
             using (var client = new HttpClient())
             {
@@ -89,8 +89,8 @@ namespace UI.eProduct.APIHelpers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                HttpContent c = new StringContent(JsonConvert.SerializeObject(regVM), Encoding.UTF8, "application/json");
-                var token = new Token().GetToken();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                //var token = new Token().GetToken();
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage Res = client.PostAsync(u, c).Result;
                 
                 if (Res.IsSuccessStatusCode)
@@ -98,12 +98,11 @@ namespace UI.eProduct.APIHelpers
                     //Storing the response details recieved from web api
                     var RegisterResponse = Res.Content.ReadAsStringAsync().Result;
                     //Deserializing the response recieved from web api and storing into the Employee list
-                    return JsonConvert.DeserializeObject<AuthUser>(RegisterResponse);
+                    return RegisterResponse; //JsonConvert.DeserializeObject<AuthUser>(RegisterResponse);
                 }
                 else
                 {
                     var contents = Res.Content.ReadAsStringAsync();
-
                     string responseMessage = ApiResponseMessage(contents.Result);
                     throw new Exception("REGISTER ATTEMPT FAILED" + (responseMessage.Length > 1 ? ": " + responseMessage : "."));
                 }

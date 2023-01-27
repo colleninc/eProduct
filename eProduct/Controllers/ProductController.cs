@@ -23,7 +23,7 @@ namespace eProduct.Controllers
 
         [HttpPost]
         [Route("AddProduct")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Create(ProductDto data)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid product details");
@@ -44,7 +44,7 @@ namespace eProduct.Controllers
 
         [HttpPost]
         [Route("UpdateProduct")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Edit(Guid id, ProductDto data)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid input data");

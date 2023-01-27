@@ -54,3 +54,4 @@ C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcor
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcoreapp3.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcoreapp3.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.0\Razor\Views\Account\RegisterCompleted.cshtml.g.cs
