@@ -63,6 +63,7 @@ namespace UI.eProduct.Controllers
             if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
                 return RedirectToAction("Login", "Account");
 
+            var response = await _aPIHelpers.GetShoppingCartItems(_shoppingCart.GetShoppingCartId());
             var UserId = HttpContext.Session.GetString("UserID");
             var Email = HttpContext.Session.GetString("Email"); ;
             var res = await _aPIHelpers.CompleteOrder(_shoppingCart.GetShoppingCartId(), UserId, Email);
