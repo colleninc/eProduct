@@ -310,8 +310,8 @@ namespace UI.eProduct.APIHelpers
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
                 Uri u = new Uri(@"" + _BaseURL + $"api/Orders/RemoveItemFromShoppingCart?id={item.Id}&CartId={ CartId}");
 
-                HttpContent c = new StringContent(JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = client.PostAsync(u, c).Result;
+                //HttpContent c = new StringContent(JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = client.DeleteAsync(u).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     var contents = response.Content.ReadAsStringAsync().Result;
