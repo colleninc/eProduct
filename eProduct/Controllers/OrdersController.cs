@@ -30,20 +30,21 @@ namespace api.eProduct.Controllers
 
         [HttpGet]
         [Route("GetShoppingCartItems")]
-        public async Task<ShoppingCartVM> ReturnWhatsIntheBasket(string CartId)
+        public async Task<List<ShoppingCartItem>> ReturnWhatsIntheBasket(string CartId)
         {
             try
             {
                 var items = _shoppingCart.GetShoppingCartItems(CartId);
-                _shoppingCart.ShoppingCartItems = items;
+                
+                //_shoppingCart.ShoppingCartItems = items;
 
-                var basket = new ShoppingCartVM()
+               /* var basket = new ShoppingCartVM()
                 {
                     ShoppingCart = null, //_shoppingCart,
                     ShoppingCartTotal = 0// _shoppingCart.GetShoppingCartTotal(CartId)
                 };
-
-                return basket;
+               */
+                return items;
             }
             catch 
             {
@@ -95,15 +96,13 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("CompleteOrder")]
-        public async Task<IActionResult> CompleteOrder(string CartId)
+        public async Task<IActionResult> CompleteOrder(string CartId, string userId, string userEmail)
         {
             try
             {
                 var items = _shoppingCart.GetShoppingCartItems(CartId);
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
-
-                await _ordersService.StoreOrderAsync(items, userId, userEmailAddress);
+                
+                await _ordersService.StoreOrderAsync(items, userId, userEmail);
                 await _shoppingCart.ClearShoppingCartAsync(CartId);
 
                 return Ok("OrderCompleted");

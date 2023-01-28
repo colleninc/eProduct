@@ -11,6 +11,7 @@ using UI.eProduct.ApiUtils;
 using UI.eProduct.Data.VM;
 using UI.eProduct.Models;
 using Microsoft.AspNetCore.Http;
+using UI.eProduct.Data;
 
 namespace UI.eProduct.APIHelpers
 {
@@ -76,6 +77,8 @@ namespace UI.eProduct.APIHelpers
                 }
             }
         }
+
+        
 
         public async Task<string> RegisterUser(RegisterVM regVM)
         {
@@ -228,7 +231,7 @@ namespace UI.eProduct.APIHelpers
             using (HttpClient client = new HttpClient())
             {
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-                Uri u = new Uri(@"" + _BaseURL + $"/api/Orders/AddItemToShoppingCart/cartid={CartId}");
+                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/RemoveItemFromShoppingCart?id={item.Id}&CartId={ CartId}");
 
                 HttpContent c = new StringContent(JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = client.PostAsync(u, c).Result;
@@ -241,14 +244,42 @@ namespace UI.eProduct.APIHelpers
             }
         }
 
-        public async Task<List<ShoppingBasketItems>> GetShoppingCartItems(string cartid)
+        public async Task<string> CompleteOrder(string CartId, string UserId, string email)
         {
-            
-            List<ShoppingBasketItems> Categories = new List<ShoppingBasketItems>();
+            List<ShoppingBasketItems> items = new List<ShoppingBasketItems>();
             using (var client = new HttpClient())
             {
                 //Passing service base url
-                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/CompleteOrder?CartId={cartid}");
+                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/CompleteOrder?CartId={CartId}&userId={UserId}&userEmail={email}");
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //var token = new Token().GetToken();
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                HttpResponseMessage Res = await client.GetAsync(u);
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api
+                    var EmpResponse = Res.Content.ReadAsStringAsync().Result;
+                    //Deserializing the response recieved from web api and storing into the Employee list
+                    return EmpResponse;
+                }
+                else
+                    return null;
+
+
+            }
+            
+        }
+        public async Task<List<ShoppingBasketItems>> GetShoppingCartItems(string cartid)
+        {
+
+            List<ShoppingBasketItems> items = new List<ShoppingBasketItems>();
+            using (var client = new HttpClient()) 
+            {
+                //Passing service base url
+                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/GetShoppingCartItems?CartId={cartid}");
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -261,11 +292,11 @@ namespace UI.eProduct.APIHelpers
                     //Storing the response details recieved from web api
                     var EmpResponse = Res.Content.ReadAsStringAsync().Result;
                     //Deserializing the response recieved from web api and storing into the Employee list
-                    Categories = JsonConvert.DeserializeObject<List<ShoppingBasketItems>>(EmpResponse);
+                    items = JsonConvert.DeserializeObject<List<ShoppingBasketItems>>(EmpResponse);
                 }
 
             }
-            return Categories;
+            return items;
         }
 
         #endregion

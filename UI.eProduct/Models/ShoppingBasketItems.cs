@@ -9,12 +9,12 @@ namespace UI.eProduct.Models
     public class ShoppingBasketItems
     {
         [Key]
-        public int Id { get; set; }
+        public int Guid { get; set; }
         
         public Product Product { get; set; }
         public int Quantity { get; set; }
         public string ShoppingBasketId { get; set; }
-
+        
 
     }
 }

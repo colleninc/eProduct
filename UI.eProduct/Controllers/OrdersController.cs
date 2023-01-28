@@ -57,5 +57,25 @@ namespace UI.eProduct.Controllers
             }
             return RedirectToAction("ShoppingBasket", "Orders");
         }
+
+        public async Task<IActionResult> CompleteOrder()
+        {
+            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
+                return RedirectToAction("Login", "Account");
+
+            var UserId = HttpContext.Session.GetString("UserID");
+            var Email = HttpContext.Session.GetString("Email"); ;
+            var res = await _aPIHelpers.CompleteOrder(_shoppingCart.GetShoppingCartId(), UserId, Email);
+            if (res != null)
+            {
+                //send email to user
+                return View("OrderCompleted");
+            }
+            else
+            {
+                TempData["Error"] = res;
+                return RedirectToAction("ShoppingBasket", "Orders");
+            }
+        }
     }
 }

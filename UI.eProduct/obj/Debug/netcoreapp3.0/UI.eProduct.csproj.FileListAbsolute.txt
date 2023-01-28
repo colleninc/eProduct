@@ -55,3 +55,5 @@ C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcor
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcoreapp3.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.0\Razor\Views\Account\RegisterCompleted.cshtml.g.cs
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.0\Razor\Views\Shared\Components\ShoppingBasketSummary\Default.cshtml.g.cs
+C:\Users\CollenMawela-MpiloTe\source\repos\eProduct\UI.eProduct\obj\Debug\netcoreapp3.0\Razor\Views\Orders\OrderCompleted.cshtml.g.cs

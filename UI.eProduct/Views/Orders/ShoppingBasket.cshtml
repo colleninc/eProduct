@@ -1,12 +1,12 @@
 ﻿@using UI.eProduct.Data.VM;
-@model ShoppingBasketVM
+@model List<ShoppingBasketItems>
 
 @{ ViewData["Title"] = "Shopping cart summary"; }
 
 <div class="row">
     <div class="col-md-8 offset-2">
         <div class="text-center">
-            <h2>You shopping cart summary</h2>
+            <h2>Your shopping basket summary</h2>
         </div>
 
         <table class="table">
@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.ShoppingBasket.Shoppingtems)
+                @foreach (var item in Model)
                 {
     <tr>
         <td class="align-middle">@item.Quantity</td>
@@ -33,7 +33,7 @@
                 <i class="bi bi-cart-dash"></i>
             </a>
             |
-            <a class="text-success" asp-controller="Orders" asp-action="AddItemToBasket"
+            <a class="text-success" asp-controller="Orders" asp-action="AddItemToShoppingCart"
                asp-route-id="@item.Product.Id">
                 <i class="bi bi-cart-plus"></i>
             </a>
@@ -45,7 +45,7 @@
                     <td colspan="2"></td>
                     <td><b>Total:</b></td>
                     <td>
-                        @Model.ShoppingBasketTotal.ToString("c")
+                        @Model.Select(n => n.Product.Price * n.Quantity).Sum().ToString("c")
                     </td>
                     <td></td>
                 </tr>
@@ -68,4 +68,4 @@
     </div>
 </div>
 
-}
+
