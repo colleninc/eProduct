@@ -96,14 +96,14 @@ namespace api.eProduct.Controllers
 
         [HttpPost]
         [Route("CompleteOrder")]
-        public async Task<IActionResult> CompleteOrder(string CartId, string userId, string userEmail)
+        public async Task<IActionResult> CompleteOrder(OrderDto orderDto)
         {
             try
             {
-                var items = _shoppingCart.GetShoppingCartItems(CartId);
+                var items = _shoppingCart.GetShoppingCartItems(orderDto.CartId);
                 
-                await _ordersService.StoreOrderAsync(items, userId, userEmail);
-                await _shoppingCart.ClearShoppingCartAsync(CartId);
+                await _ordersService.StoreOrderAsync(items, orderDto.UserId, orderDto.Email);
+                await _shoppingCart.ClearShoppingCartAsync(orderDto.CartId);
 
                 return Ok("OrderCompleted");
             }

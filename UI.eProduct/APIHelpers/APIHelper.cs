@@ -12,6 +12,7 @@ using UI.eProduct.Data.VM;
 using UI.eProduct.Models;
 using Microsoft.AspNetCore.Http;
 using UI.eProduct.Data;
+using System.Linq;
 
 namespace UI.eProduct.APIHelpers
 {
@@ -78,7 +79,83 @@ namespace UI.eProduct.APIHelpers
             }
         }
 
-        
+        private async Task<string> BuildOrderItemsBody(List<ShoppingBasketItems> cartItems, string DisplayName)
+        {
+            StringBuilder sBody = new StringBuilder();
+            const string NEWLINE = "<tr><td></td></tr>";
+            sBody.Append("<table>");
+            sBody.Append($"<tr><td>Good day {DisplayName}</td></tr>");
+            sBody.Append(NEWLINE);
+            sBody.Append("<tr><td><b>Your shopping basket summary</b></td></tr>");
+            sBody.Append("<tr><td><table>");
+            sBody.Append("<thead>");
+            sBody.Append("</thead>");
+            sBody.Append("<tbody>");
+            foreach (var item in cartItems)
+            {
+                sBody.Append("<tr>");
+                sBody.Append($"<td>{item.Quantity}</td>");
+                sBody.Append($"<td>{item.Product.ProductName}</td>");
+                sBody.Append($"<td>{item.Product.Price.ToString("c")}</td>");
+                sBody.Append($"<td>{(item.Quantity * item.Product.Price).ToString("c")}</td>");
+                sBody.Append("<tr>");
+            } 
+            sBody.Append("</tbody>");            
+            sBody.Append("<tfoot><tr>");            
+            sBody.Append("<td colspan='2'></td>");
+            sBody.Append("<td><b>Total:</b></td>");
+            sBody.Append("<td></td>");
+            sBody.Append($"<td>{cartItems.Select(n => n.Product.Price * n.Quantity).Sum().ToString("c")}</td>");
+            sBody.Append("</tr></tfoot>");
+            sBody.Append("</td></tr></table>");
+            sBody.Append("</table>");
+            return sBody.ToString();
+        }
+        public async Task<string> SendOrderComfirmation(List<ShoppingBasketItems> cartItems, string email, string displayName)
+        {
+            try
+            {
+                MailRequest mailRequest = new MailRequest { 
+                 Body = await BuildOrderItemsBody(cartItems, displayName),
+                 ToEmail= email,
+                 Subject = "eProduct - Order Confirmation"
+                };
+
+                using (var client = new HttpClient())
+                {
+                    //Passing service base url
+
+                    Uri u = new Uri(@"" + _BaseURL + "api/Notification/Send");
+                    client.DefaultRequestHeaders.Clear();
+                    //Define request data format
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var obj = JsonConvert.SerializeObject(mailRequest);
+
+                    HttpContent c = new StringContent(obj, Encoding.UTF8, "application/json");
+                    HttpResponseMessage Res = client.PostAsync(u, c).Result;
+
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        //Storing the response details recieved from web api
+                        var EmailResponse = Res.Content.ReadAsStringAsync().Result;
+                        //Deserializing the response recieved from web api and storing into the Employee list
+                        return EmailResponse;
+                    }
+                    else
+                    {
+                        var contents = Res.Content.ReadAsStringAsync();
+
+                        string responseMessage = ApiResponseMessage(contents.Result);
+                        return responseMessage;
+                    }
+                }
+            }
+            catch
+            {
+                return "Error sending email";
+            }
+        }
 
         public async Task<string> RegisterUser(RegisterVM regVM)
         {
@@ -244,19 +321,23 @@ namespace UI.eProduct.APIHelpers
             }
         }
 
-        public async Task<string> CompleteOrder(string CartId, string UserId, string email)
+        public async Task<string> CompleteOrder(OrderVM orderVM)
         {
             List<ShoppingBasketItems> items = new List<ShoppingBasketItems>();
             using (var client = new HttpClient())
             {
                 //Passing service base url
-                Uri u = new Uri(@"" + _BaseURL + $"api/Orders/CompleteOrder?CartId={CartId}&userId={UserId}&userEmail={email}");
+                Uri u = new Uri(@"" + _BaseURL + "api/Orders/CompleteOrder");
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var obj = JsonConvert.SerializeObject(orderVM);
+
+                HttpContent c = new StringContent(obj, Encoding.UTF8, "application/json");
+               
                 //var token = new Token().GetToken();
                 //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                HttpResponseMessage Res = await client.GetAsync(u);
+                HttpResponseMessage Res = client.PostAsync(u, c).Result;
 
                 if (Res.IsSuccessStatusCode)
                 {

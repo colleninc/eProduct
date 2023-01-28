@@ -1,6 +1,7 @@
 using api.eProduct.Data;
 using api.eProduct.Model;
 using eProduct.Data;
+using eProduct.Data.Base;
 using eProduct.Data.Service;
 using eProduct.Model;
 using eProduct.Model.Settings;
@@ -88,7 +89,8 @@ namespace eProduct
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<IProductCategories, ProductsCategoriesService>();
             services.AddScoped<IOrdersService, OrdersService>();
-
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));            
+            //services.AddTransient<IMailService, MailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
             //Authentication and authorization

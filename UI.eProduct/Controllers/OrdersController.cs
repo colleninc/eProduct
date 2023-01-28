@@ -63,13 +63,20 @@ namespace UI.eProduct.Controllers
             if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserID")))
                 return RedirectToAction("Login", "Account");
 
-            var response = await _aPIHelpers.GetShoppingCartItems(_shoppingCart.GetShoppingCartId());
-            var UserId = HttpContext.Session.GetString("UserID");
-            var Email = HttpContext.Session.GetString("Email"); ;
-            var res = await _aPIHelpers.CompleteOrder(_shoppingCart.GetShoppingCartId(), UserId, Email);
+            var CartItems = await _aPIHelpers.GetShoppingCartItems(_shoppingCart.GetShoppingCartId());
+            var _UserId = HttpContext.Session.GetString("UserID");
+            var _Email = HttpContext.Session.GetString("Email");
+            var _DisplayName = HttpContext.Session.GetString("DisplayName");
+            var res = await _aPIHelpers.CompleteOrder(
+                new Data.VM.OrderVM 
+                {  
+                  CartId = _shoppingCart.GetShoppingCartId(),
+                  UserId = _UserId,
+                  Email = _Email
+                });
             if (res != null)
             {
-                //send email to user
+                _aPIHelpers.SendOrderComfirmation(CartItems, _Email, _DisplayName);
                 return View("OrderCompleted");
             }
             else
