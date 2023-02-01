@@ -29,6 +29,7 @@ namespace eProduct.Controllers
             if (!ModelState.IsValid) return BadRequest("Invalid product details");
             var NewProduct = new Product()
             {
+                Id = Guid.NewGuid(),
                 ProductCategoryId = data.ProductCategoryID,
                 Description = data.Description,
                 ProductName = data.ProductName,

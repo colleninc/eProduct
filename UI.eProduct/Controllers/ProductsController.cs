@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using UI.eProduct.APIHelpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using UI.eProduct.Models;
+using UI.eProduct.Data.VM;
 
 namespace UI.eProduct.Controllers
 {
@@ -32,6 +35,23 @@ namespace UI.eProduct.Controllers
             return View(productDetails);
         }
 
-        
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.Categories = new SelectList(await _aPIHelpers.GetCategoryList(true), "Id", "Description");
+            return View(); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(NewProductVM product)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = new SelectList(await _aPIHelpers.GetCategoryList(true), "Id", "Description"); 
+                return View(product);
+            }
+            await _aPIHelpers.AddNewProductAsync(product);
+            return RedirectToAction("Index", "Products");
+            
+        }
     }
 }

@@ -89,6 +89,9 @@ namespace UI.eProduct.APIHelpers
             sBody.Append("<tr><td><b>Your shopping basket summary</b></td></tr>");
             sBody.Append("<tr><td><table>");
             sBody.Append("<thead>");
+            sBody.Append("<tr>");
+            sBody.Append("<th>Quantity</th><th>Product</th><th>Price</th><th>Subtotal</th>");                   
+            sBody.Append("</tr>");
             sBody.Append("</thead>");
             sBody.Append("<tbody>");
             foreach (var item in cartItems)
@@ -103,8 +106,7 @@ namespace UI.eProduct.APIHelpers
             sBody.Append("</tbody>");            
             sBody.Append("<tfoot><tr>");            
             sBody.Append("<td colspan='2'></td>");
-            sBody.Append("<td><b>Total:</b></td>");
-            sBody.Append("<td></td>");
+            sBody.Append("<td><b>Total:</b></td>");            
             sBody.Append($"<td>{cartItems.Select(n => n.Product.Price * n.Quantity).Sum().ToString("c")}</td>");
             sBody.Append("</tr></tfoot>");
             sBody.Append("</td></tr></table>");
@@ -193,6 +195,23 @@ namespace UI.eProduct.APIHelpers
 
         #region Product
 
+        public async Task<string> AddNewProductAsync(NewProductVM newproduct)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+                Uri u = new Uri(@"" + _BaseURL + "api/Product/AddProduct");
+                
+                HttpContent c = new StringContent(JsonConvert.SerializeObject(newproduct), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = client.PostAsync(u, c).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var contents = response.Content.ReadAsStringAsync().Result;
+                    return contents;
+                }
+                return response.ReasonPhrase;
+            }
+        }
         public async Task<IEnumerable<Product>> GetProductList()
         {
             List<Product> Products = new List<Product>();
@@ -258,7 +277,7 @@ namespace UI.eProduct.APIHelpers
                 return response.ReasonPhrase;
             }
         }
-        public async Task<List<ProductCategory>> GetCategoryList()
+        public async Task<List<ProductCategory>> GetCategoryList(bool PopulateDropDown = false)
         {
             List<ProductCategory> Categories = new List<ProductCategory>();
             using (var client = new HttpClient())
@@ -277,6 +296,8 @@ namespace UI.eProduct.APIHelpers
                     var EmpResponse = Res.Content.ReadAsStringAsync().Result;
                     //Deserializing the response recieved from web api and storing into the Employee list
                     Categories = JsonConvert.DeserializeObject<List<ProductCategory>>(EmpResponse);
+                    if (PopulateDropDown)
+                        Categories.Insert(0, new ProductCategory { Id = Guid.Empty, Description = "" });
                 }
 
             }
@@ -340,10 +361,8 @@ namespace UI.eProduct.APIHelpers
                 HttpResponseMessage Res = client.PostAsync(u, c).Result;
 
                 if (Res.IsSuccessStatusCode)
-                {
-                    //Storing the response details recieved from web api
-                    var EmpResponse = Res.Content.ReadAsStringAsync().Result;
-                    //Deserializing the response recieved from web api and storing into the Employee list
+                {                    
+                    var EmpResponse = Res.Content.ReadAsStringAsync().Result;                    
                     return EmpResponse;
                 }
                 else

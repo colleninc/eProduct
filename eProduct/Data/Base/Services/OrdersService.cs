@@ -52,9 +52,28 @@ namespace eProduct.Data.Service
                     OrderId = order.Id,
                     Price = item.Product.Price
                 };
-                await _context.OrderItems.AddAsync(orderItem);
+                await _context.OrderItems.AddAsync(orderItem);               
+
             }
             await _context.SaveChangesAsync();
+        }
+
+        public void RemoveItemFromCart(Product product, string CartId)
+        {
+            var shoppingCartItem = _context.ShoppingCartItems.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == CartId);
+
+            if (shoppingCartItem != null)
+            {
+                if (shoppingCartItem.Quantity > 1)
+                {
+                    shoppingCartItem.Quantity--;
+                }
+                else
+                {
+                    _context.ShoppingCartItems.Remove(shoppingCartItem);
+                }
+            }
+            _context.SaveChanges();
         }
     }
 }

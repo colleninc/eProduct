@@ -103,13 +103,14 @@ namespace api.eProduct.Controllers
                 var items = _shoppingCart.GetShoppingCartItems(orderDto.CartId);
                 
                 await _ordersService.StoreOrderAsync(items, orderDto.UserId, orderDto.Email);
+                await _productsService.ReducetOrderedItemInstock(items);
                 await _shoppingCart.ClearShoppingCartAsync(orderDto.CartId);
 
                 return Ok("OrderCompleted");
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error removing item - {ex.Message}");
+                return BadRequest($"Error completing order item - {ex.Message}");
             }
 
             
